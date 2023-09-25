@@ -9,14 +9,12 @@ import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-import HomeStack from './components/HomeStack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Root from './screens/Root';
 import AddIssue from './screens/AddIssue';
-import CustomDrawer from './components/CustomDrawer';
-import Icon from 'react-native-vector-icons/Entypo';
-import tw from 'twrnc';
+import IssueUpload from './screens/IssueUpload';
 export default function App() {
-  const Drawer = createDrawerNavigator();
+  const Stack = createNativeStackNavigator();
   const [loaded] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
@@ -35,37 +33,26 @@ export default function App() {
     <TamaguiProvider config={config}>
       <NavigationContainer>
         <SafeAreaProvider>
-          <Drawer.Navigator
-            drawerContent={(props) => <CustomDrawer {...props} />}
-          >
-            <Drawer.Screen
-              name="HomeStack"
-              component={HomeStack}
-              options={{
-                title: 'Home',
-                drawerIcon: ({ focused, size }) => (
-                  <Icon
-                    name="home"
-                    size={25}
-                    style={tw` text-blue-900 my-1`}
-                  ></Icon>
-                ),
-              }}
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Root"
+              component={Root}
+              options={{ headerShown: false }}
             />
-            <Drawer.Screen
-              name="Add Issue"
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen
+              name="Camera"
               component={AddIssue}
-              options={{
-                drawerIcon: ({ focused, size }) => (
-                  <Icon
-                    name="camera"
-                    size={25}
-                    style={tw`text-center text-blue-900 my-1`}
-                  ></Icon>
-                ),
-              }}
+              options={{ title: 'Add Issue' }}
             />
-          </Drawer.Navigator>
+            <Stack.Screen
+              name="IssueUpload"
+              component={IssueUpload}
+              options={{
+                title: 'Upload Issue',
+              }}
+            ></Stack.Screen>
+          </Stack.Navigator>
         </SafeAreaProvider>
       </NavigationContainer>
     </TamaguiProvider>

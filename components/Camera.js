@@ -5,13 +5,16 @@ import { Camera, CameraType } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import Icon from 'react-native-vector-icons/Entypo';
 import Button from './Button';
+import useImageStore from '../stores/imageStore';
+import { useNavigation } from '@react-navigation/native';
 const CameraComponent = () => {
+  const navigation = useNavigation();
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [image, setImage] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
-
+  const storeImage = useImageStore((state) => state.setImage);
   useEffect(() => {
     (async () => {
       MediaLibrary.requestPermissionsAsync();
@@ -36,8 +39,9 @@ const CameraComponent = () => {
     if (image) {
       try {
         const asset = await MediaLibrary.createAssetAsync(image);
-        alert('Picture saved! 🎉');
+        storeImage(image);
         setImage(null);
+        navigation.navigate('IssueUpload');
         console.log('saved successfully');
       } catch (error) {
         console.log(error);
